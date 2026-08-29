@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palift</title>
+<style>
+  :root{
+    --red:#9a2118;
+    --bg:#0e0d0c;
+    --bg2:#161412;
+    --text:#f5efe9;
+    --muted:#9a938c;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:48px;
+    background:radial-gradient(ellipse at 50% 20%, var(--bg2), var(--bg));
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Arial, sans-serif;
+    padding:24px;
+    text-align:center;
+  }
+  .logo{
+    width:min(320px, 60vw);
+    height:auto;
+    filter:drop-shadow(0 0 30px rgba(154,33,24,.35));
+  }
+  .counter-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+  }
+  .hours{
+    font-size:clamp(64px, 14vw, 140px);
+    font-weight:800;
+    line-height:1;
+    color:var(--text);
+    letter-spacing:-2px;
+    font-variant-numeric:tabular-nums;
+  }
+  .hours span{
+    color:var(--red);
+  }
+  .label{
+    font-size:clamp(14px, 2.2vw, 18px);
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:3px;
+  }
+  .sub{
+    display:flex;
+    gap:28px;
+    margin-top:8px;
+  }
+  .sub div{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+  }
+  .sub .n{
+    font-size:22px;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+  }
+  .sub .l{
+    font-size:11px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:1px;
+  }
+  .done{
+    color:var(--red);
+    font-weight:700;
+  }
+</style>
+</head>
+<body>
+
+  <img class="logo" src="logo-white.png" alt="Palift">
+
+  <div class="counter-wrap">
+    <div class="hours" id="hours">--</div>
+    <div class="label" id="label">ساعة متبقية</div>
+    <div class="sub">
+      <div><span class="n" id="d">00</span><span class="l">يوم</span></div>
+      <div><span class="n" id="m">00</span><span class="l">دقيقة</span></div>
+      <div><span class="n" id="s">00</span><span class="l">ثانية</span></div>
+    </div>
+  </div>
+
+<script>
+  const TARGET = new Date("2026-09-12T12:20:43").getTime();
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function tick(){
+    const now = Date.now();
+    let diff = TARGET - now;
+
+    const hoursEl = document.getElementById('hours');
+    const labelEl = document.getElementById('label');
+
+    if (diff <= 0){
+      hoursEl.textContent = "0";
+      hoursEl.classList.add('done');
+      labelEl.textContent = "انتهى الوقت";
+      document.getElementById('d').textContent = "00";
+      document.getElementById('m').textContent = "00";
+      document.getElementById('s').textContent = "00";
+      return;
+    }
+
+    const totalHours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+
+    hoursEl.innerHTML = `<span>${totalHours}</span>`;
+    document.getElementById('d').textContent = pad(days);
+    document.getElementById('m').textContent = pad(minutes);
+    document.getElementById('s').textContent = pad(seconds);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
+
+</body>
+</html>
